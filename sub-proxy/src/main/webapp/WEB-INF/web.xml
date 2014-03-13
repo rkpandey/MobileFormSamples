@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5">
+    <display-name>Mobile Form Submission Proxy</display-name>
+    <servlet>
+        <servlet-name>Mobile Form Proxy for all external services</servlet-name>
+        <servlet-class>com.adobe.sample.rpandey.MobileFormProxy</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Mobile Form Proxy for all external services</servlet-name>
+        <url-pattern>/all</url-pattern>
+    </servlet-mapping>
+</web-app>
