@@ -35,7 +35,7 @@ import java.util.*;
  * Time: 3:15 PM
  */
 public class MobileFormProxy extends HttpServlet {
-    private static final String LC_SUBMISSION_URL = "http://localhost:8080/lc/bin/xfaforms/submitaction";
+    private static final String LC_SUBMISSION_URL = "/lc/bin/xfaforms/submitaction";
     private static final String PARAM_PACKET = "packet";
     private static final String PARAM_SUBMIT_URL = "submitUrl";
 
@@ -46,6 +46,7 @@ public class MobileFormProxy extends HttpServlet {
 
 
     private static final String PACKET_FORM = "form";
+    private static final String LCServer;
 
     static {
         //property file that maintains a map between submitUrl hints and actual submitUrl
@@ -53,8 +54,21 @@ public class MobileFormProxy extends HttpServlet {
         try {
             SubmitUrlMaps.load(MobileFormProxy.class.getResourceAsStream("/submit.properties"));
         } catch (IOException e) {
-
+            e.printStackTrace();
         }
+
+        Properties LCServerInfo = new Properties();
+
+        try {
+            LCServerInfo.load(MobileFormProxy.class.getResourceAsStream("/lcserver.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if(LCServerInfo != null )
+            LCServer = LCServerInfo.getProperty("lcserver");
+        else
+            LCServer = "";
 
         //since we are playing with CONTENT so just ignore these
         blacklistHeaders.add("CONTENT-LENGTH");
@@ -123,7 +137,7 @@ public class MobileFormProxy extends HttpServlet {
     protected void doHead(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
         //pass this head request to LC_URL
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpHead httpHead = new HttpHead(LC_SUBMISSION_URL);
+        HttpHead httpHead = new HttpHead(LCServer+LC_SUBMISSION_URL);
         replicateResponse(executeRequest(httpClient, httpServletRequest, httpHead), httpServletResponse);
     }
 
@@ -153,7 +167,7 @@ public class MobileFormProxy extends HttpServlet {
             }
 
             CloseableHttpClient httpClient = HttpClients.createDefault();
-            HttpPost lcPost = new HttpPost(LC_SUBMISSION_URL);
+            HttpPost lcPost = new HttpPost(LCServer+LC_SUBMISSION_URL);
             lcPost.setEntity(multipartEntityBuilder.build());
             try{
                 HttpResponse response = executeRequest(httpClient, httpServletRequest, lcPost);
