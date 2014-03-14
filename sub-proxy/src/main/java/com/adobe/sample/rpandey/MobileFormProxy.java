@@ -204,6 +204,9 @@ public class MobileFormProxy extends HttpServlet {
                                 httpClient2.close();
                             }
                         }
+                        else {
+                            replicateResponse(response, httpServletResponse);
+                        }
                     }
                     else {
                         replicateResponse(response, httpServletResponse);
